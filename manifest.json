@@ -1,9 +1,9 @@
 {
-  "name": "YOURAPPNAME",
-  "vendor": "vtex",
+  "name": "scriptintegration",
+  "vendor": "agenciaaplicahpartnerbrasil",
   "version": "0.0.1",
-  "title": "CHANGEME",
-  "description": "CHANGEME",
+  "title": "scriptintegration",
+  "description": "This is an pixel app that allows the integration of scripts in storefront.",
   "billingOptions": {
     "termsURL": "https://compliance.vtex.com/gdpr/policies/vtex-privacy-policy",
     "support": {
@@ -25,13 +25,18 @@
     "vtex.pixel-interfaces": "1.x"
   },
   "settingsSchema": {
-    "title": "YOUR APP NAME",
+    "title": "scriptintegration",
     "type": "object",
     "properties": {
       "gtmId": {
         "title": "SAMPLE FIELD",
-        "description": "Enter the ID (GTM-XXXX) from your Google Tag Manager",
+        "description": "Enter your Google Tag Manager ID (GTM-XXXX)",
         "type": "string"
+      },
+      "allowCustomHtmlTags": {
+        "title": "Allow custom HTML tags",
+        "description": "Keep in mind that using custom HTML tags can drastically impact store performance",
+        "type": "boolean"
       }
     }
   },

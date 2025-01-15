@@ -1,28 +1,25 @@
-<style>
+<script src="https://www.google.com/recaptcha/enterprise.js" async defer></script>
 
-  @media screen and (max-width: 700px) {
-    .vtex-store-components-3-x-productDescriptionText.c-muted-1 iframe {
-      width: 90vw;
-    }
-  }
-
-  .error {
-    text-align: center;
-  }
-</style>
-
-<div class="modal-overlay" style="display:none"></div>
-<div class="modal-layout" style="display:none">
   <style>
-    .sucess h3 {
-      color: #4b61aa;
-      text-align: center;
-      font-family: "Open Sans", sans-serif;
-      margin: 0 0 15px;
-      font-size: 22px;
+    @media screen and (max-width: 700px) {
+      .vtex-store-components-3-x-productDescriptionText.c-muted-1 iframe {
+        width: 90vw;
+      }
     }
-    form.fields {
+    .error {
       text-align: center;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(5px);
+      z-index: 9998;
+      display: none;
     }
     .modal-layout {
       position: fixed;
@@ -36,35 +33,24 @@
       z-index: 9999;
       width: 90%;
       max-width: 500px;
-      display: none
-    }
-    .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.5);
-      backdrop-filter: blur(5px);
-      z-index: 9998;
-      display: none
+      display: none;
     }
     .modal-layout h2,
     .modal-layout p {
       text-align: center;
       font-family: "Open Sans", sans-serif;
-      margin: 0 0 15px
+      margin: 0 0 15px;
     }
     .modal-layout p {
-      color: #717786
+      color: #717786;
     }
     .modal-layout h2 {
-      color: #4B61AA
+      color: #4B61AA;
     }
     .modal-layout .fields {
       display: flex;
       flex-direction: column;
-      align-items: center
+      align-items: center;
     }
     .modal-layout .fields input {
       width: 90%;
@@ -74,10 +60,10 @@
       border: 1px solid gray;
       border-radius: 5px;
       padding: 10px;
-      font-size: 16px
+      font-size: 16px;
     }
     .modal-layout .fields input::placeholder {
-      color: #999
+      color: #999;
     }
     .modal-layout button#send-data {
       background-color: #3db17d;
@@ -88,390 +74,339 @@
       font-family: "Open Sans", sans-serif;
       font-size: 16px;
       cursor: pointer;
-      transition: background-color 0.3s ease
+      transition: background-color 0.3s ease;
     }
     .modal-layout button#send-data:hover {
-      background-color: #339b6c
+      background-color: #339b6c;
+    }
+
+    .g-recaptcha div {
+      margin-left: auto;
+      margin-right: auto;
+      margin-bottom: 11px;
+    }
+    .sucess h3 {
+      color: #4b61aa;
+      text-align: center;
+      font-family: "Open Sans", sans-serif;
+      margin: 0 0 15px;
+      font-size: 22px;
+    }
+    form.fields {
+      text-align: center;
     }
   </style>
 
-  <div class="form-title">
-    <h2>Preencha o formulário abaixo para solicitar seu teste grátis por 7 dias:</h2>
+  <div class="modal-overlay"></div>
+  <div class="modal-layout">
+    <div class="form-title">
+      <h2>Preencha o formulário abaixo para solicitar seu teste grátis por 7 dias:</h2>
+    </div>
+    <!-- Observe que o botão abaixo tem type="submit" -->
+    <form class="fields">
+      <input type="text" placeholder="Empresa" id="business" required />
+      <input type="text" placeholder="Nome" id="name" required />
+      <input type="email" placeholder="E-mail" id="email" required />
+      <input type="text" placeholder="Telefone" id="phone" required />
+      <input class="productid" style="display: none" type="text" placeholder="Id do Produto" id="productid" />
+
+      <div class="g-recaptcha" 
+           data-sitekey="6LfhWLgqAAAAANP7nYodiryiCuv7Wll68H2mLbrd" 
+           data-action="LOGIN">
+      </div>
+
+      <!-- Botão do tipo "submit" -->
+      <button type="submit" id="send-data">Enviar</button>
+    </form>
+
+    <div style="display: none" class="sucess">
+      <p>Sua solicitação foi enviada com sucesso</p>
+    </div>
+    <div style="display: none" class="error">
+      <p>Ocorreu um erro no envio de seus dados. Tente novamente</p>
+    </div>
   </div>
-  <form class="fields">
-    <input type="text" placeholder="Empresa" id="business" required>
-    <input type="text" placeholder="Nome" id="name" required>
-    <input type="email" placeholder="E-mail" id="email" required>
-    <input type="text" placeholder="Telefone" id="phone" required>
-    <input class="productid" style="display: none" type="text" placeholder="Id do Produto" id="productid">
-    <button type="submit" id="send-data">Enviar</button>
-  </form>
 
-  <div style="display: none" class="sucess">
-    <p>Sua solicitação foi enviada com sucesso</p>
-  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      console.log('Iniciando monitoramento do DOM para adicionar o evento de clique...');
 
-  <div style="display: none" class="error">
-    <p>Ocorreu um erro no envio de seus dados. Tente novamente</p>
-  </div>
-</div>
+      let observer;
+      const checkInterval = 2000; // Intervalo de 2 segundos
 
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    console.log('Iniciando monitoramento do DOM para adicionar o evento de clique...');
+      const monitorElement = () => {
+        const element = document.querySelector('.vtex-rich-text-0-x-wrapper.vtex-rich-text-0-x-wrapper--test-button');
+        const productIdElement = document.querySelector('.vtex-product-specification-badges-0-x-badgeContainer--id-processo-sesuite span');
 
-    let observer;
-    const checkInterval = 2000; // Intervalo de 2 segundos
-
-    const monitorElement = () => {
-      const element = document.querySelector('.vtex-rich-text-0-x-wrapper.vtex-rich-text-0-x-wrapper--test-button');
-      const productIdElement = document.querySelector('.vtex-product-specification-badges-0-x-badgeContainer--id-processo-sesuite span');
-
-      if(productIdElement) {
-        const testButton = document.querySelector('.vtex-rich-text-0-x-wrapper--test-button');
-        testButton.style.display = 'block'; // Garante que o botão seja exibido
-      }
-
-      if (element) {
-        console.log('Elemento encontrado. Aguardando 1 segundo para adicionar o evento de clique...');
-
-        setTimeout(() => {
-          if (!element._clickEventAdded) { // Evitar adicionar múltiplos eventos
-            element.addEventListener('click', function () {
-              // Mostrar modal e overlay
-              const modalLayout = document.querySelector('.modal-layout');
-              const overlay = document.querySelector('.modal-overlay');
-              modalLayout.style.display = 'block';
-              overlay.style.display = 'block';
-
-              // Garantir que o formulário seja visível
-              const form = document.querySelector('.fields');
-              if (form) {
-                form.style.display = 'block';
-              }
-
-              // Garantir que o botão de envio esteja visível
-              const submitButton = document.getElementById('send-data');
-              if (submitButton) {
-                submitButton.style.display = 'inline-block';
-              }
-
-              // Buscar o valor do span e atribuí-lo ao input productid
-              const productIdElement = document.querySelector('.vtex-product-specification-badges-0-x-badgeContainer--id-processo-sesuite span');
-              if (productIdElement) {
-                const productIdValue = productIdElement.textContent || productIdElement.innerText;
-                document.getElementById('productid').value = productIdValue;
-              } else {
-                console.warn('Elemento do ID do produto não encontrado.');
-              }
-            });
-
-            element._clickEventAdded = true; // Marca o elemento para evitar duplicação
-            console.log('Evento de clique adicionado com sucesso.');
-
-            // Interrompe o monitoramento por intervalos
-            clearInterval(intervalId);
-          }
-        }, 1000);
-      } else {
-        console.log('Elemento ainda não encontrado. Continuando a verificar...');
-      }
-    };
-
-    // Verificar periodicamente se o elemento existe
-    const intervalId = setInterval(monitorElement, checkInterval);
-
-    // Observar alterações no DOM
-    observer = new MutationObserver(() => {
-      console.log('Alteração no DOM detectada. Verificando novamente...');
-      monitorElement();
-    });
-
-    observer.observe(document.body, { childList: true, subtree: true });
-
-    // Fechar o modal ao clicar fora dele
-    const overlay = document.querySelector('.modal-overlay');
-    if (overlay) {
-      overlay.addEventListener('click', function () {
-        const modalLayout = document.querySelector('.modal-layout');
-        modalLayout.style.display = 'none';
-        overlay.style.display = 'none';
-
-        // Resetar o formulário e a interface para o estado inicial
-        const form = document.querySelector('.fields');
-        form.reset();
-        const successMessage = document.querySelector('.sucess');
-        const errorMessage = document.querySelector('.error');
-        if (successMessage) {
-          successMessage.style.display = 'none';
-        }
-        if (errorMessage) {
-          errorMessage.style.display = 'none';
+        // Se existir ID de produto, exibe o botão de teste
+        if (productIdElement) {
+          const testButton = document.querySelector('.vtex-rich-text-0-x-wrapper--test-button');
+          if (testButton) testButton.style.display = 'block';
         }
 
-        // Limpar o valor do ID do produto
-        document.getElementById('productid').value = '';
+        if (element) {
+          console.log('Elemento encontrado. Aguardando 1 segundo para adicionar o evento de clique...');
+          setTimeout(() => {
+            if (!element._clickEventAdded) { // Evitar adicionar múltiplos eventos
+              element.addEventListener('click', function () {
+                // Mostrar modal e overlay
+                const modalLayout = document.querySelector('.modal-layout');
+                const overlay = document.querySelector('.modal-overlay');
+                modalLayout.style.display = 'block';
+                overlay.style.display = 'block';
 
-        // Garantir que o formulário e o botão reapareçam corretamente
-        if (form) {
-          form.style.display = 'block';
-        }
-        const submitButton = document.getElementById('send-data');
-        if (submitButton) {
-          submitButton.style.display = 'inline-block';
-        }
-        // Reverter o estado do botão após o envio
-        if (submitButton) {
-          submitButton.disabled = false;
-          submitButton.innerText = "Enviar";
-        }
+                // Garantir que o formulário seja visível
+                const form = document.querySelector('.fields');
+                if (form) {
+                  form.style.display = 'block';
+                }
 
-        // Exibir o título novamente ao reabrir
-        document.querySelector(".form-title h2").style.display = "block"; // Exibe o título novamente
+                // Buscar o valor do span e atribuí-lo ao input productid
+                const productSpan = document.querySelector('.vtex-product-specification-badges-0-x-badgeContainer--id-processo-sesuite span');
+                if (productSpan) {
+                  const productIdValue = productSpan.textContent.trim();
+                  document.getElementById('productid').value = productIdValue;
+                } else {
+                  console.warn('Elemento do ID do produto não encontrado.');
+                }
+              });
+
+              element._clickEventAdded = true; // Marca o elemento para evitar duplicação
+              console.log('Evento de clique adicionado com sucesso.');
+              clearInterval(intervalId);
+            }
+          }, 1000);
+        } else {
+          console.log('Elemento ainda não encontrado. Continuando a verificar...');
+        }
+      };
+
+      const intervalId = setInterval(monitorElement, checkInterval);
+
+      observer = new MutationObserver(() => {
+        console.log('Alteração no DOM detectada. Verificando novamente...');
+        monitorElement();
       });
-    }
+      observer.observe(document.body, { childList: true, subtree: true });
 
-    // Adicionar comportamento para o envio do formulário
-    const form = document.querySelector('.fields');
-    if (form) {
-      form.addEventListener('submit', function (event) {
-        event.preventDefault(); // Impede o envio real do formulário
-
-        const submitButton = document.getElementById('send-data');
-        if (submitButton) {
-          submitButton.disabled = true;
-          submitButton.innerText = "Enviando...";
-        }
-
-        // Simular o envio do formulário e o reset após o envio
-        setTimeout(function () {
-          // Simula sucesso no envio
-          const successMessage = document.querySelector('.sucess');
-          if (successMessage) {
-            successMessage.style.display = 'block';
-          }
-
-          // Reinicia o modal após o envio
+      // Fechar o modal ao clicar no overlay
+      const overlay = document.querySelector('.modal-overlay');
+      if (overlay) {
+        overlay.addEventListener('click', function () {
           const modalLayout = document.querySelector('.modal-layout');
           modalLayout.style.display = 'none';
-          document.querySelector('.modal-overlay').style.display = 'none';
+          overlay.style.display = 'none';
 
-          // Resetar o estado do botão
+          // Resetar o formulário e a interface
+          const form = document.querySelector('.fields');
+          form.reset();
+          const successMessage = document.querySelector('.sucess');
+          const errorMessage = document.querySelector('.error');
+          if (successMessage) successMessage.style.display = 'none';
+          if (errorMessage) errorMessage.style.display = 'none';
+
+          document.getElementById('productid').value = '';
+
+          if (form) form.style.display = 'block';
+          const submitButton = document.getElementById('send-data');
           if (submitButton) {
             submitButton.disabled = false;
             submitButton.innerText = "Enviar";
           }
-
-          // Exibir o título novamente ao reabrir
-          document.querySelector(".form-title h2").style.display = "block"; // Exibe o título novamente
-        }, 2000);
-      });
-    }
-  });
-
-  // ***************************************************************
-  // ***   A PARTIR DAQUI ESTÁ O CÓDIGO QUE VOCÊ PRECISA EDITAR  ***
-  // ***************************************************************
-  document.addEventListener('DOMContentLoaded', function () {
-  document.getElementById("send-data").addEventListener("click", function (event) {
-    event.preventDefault(); // Evita o comportamento padrão de envio do formulário
-
-    // Verificar se os campos obrigatórios estão preenchidos
-    if (
-      document.getElementById("business").value === "" ||
-      document.getElementById("name").value === "" ||
-      document.getElementById("email").value === "" ||
-      document.getElementById("phone").value === ""
-    ) {
-        Swal.fire({
-            icon: 'warning',
-            text: 'Preencha todos os dados'
+          document.querySelector(".form-title h2").style.display = "block";
         });
-    } else {
-        var button = this;
-        button.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i>'; // Altera o texto do botão
+      }
 
-        var business = document.getElementById("business").value;
-        var name = document.getElementById("name").value;
-        var mail = document.getElementById("email").value;
-        var productid = document.getElementById("productid").value;
-        var phone = document.getElementById("phone").value;
+      // --------------------------------------------------
+      // A PARTIR DAQUI: ÚNICO LUGAR ONDE O FORM É ENVIADO
+      // --------------------------------------------------
+      const form = document.querySelector('.fields');
+      if (form) {
+        form.addEventListener('submit', function(event) {
+          event.preventDefault(); // Impede o envio "nativo" do form
 
-        // Enviar os dados via AJAX
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", "https://teal-alpaca-302284.hostingersite.com/Softexpert/senddata.php", true);
-        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+          // Verificação do reCAPTCHA
+          const recaptchaResponse = grecaptcha.getResponse();
+          if (!recaptchaResponse) {
+            Swal.fire({
+              icon: 'warning',
+              text: 'Por favor, marque o reCAPTCHA antes de enviar.'
+            });
+            return; // Interrompe se o reCAPTCHA não estiver validado
+          }
 
-        xhr.onreadystatechange = function () {
-            // Quando a requisição finaliza:
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                // Tenta converter a string de resposta em JSON
+          // Verificar campos obrigatórios
+          if (
+            document.getElementById("business").value === "" ||
+            document.getElementById("name").value === "" ||
+            document.getElementById("email").value === "" ||
+            document.getElementById("phone").value === ""
+          ) {
+            Swal.fire({
+              icon: 'warning',
+              text: 'Preencha todos os dados'
+            });
+            return;
+          }
+
+          // Desabilita botão e mostra loading
+          const button = document.getElementById("send-data");
+          button.disabled = true;
+          button.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i>';
+
+          // Coleta os dados
+          const business = document.getElementById("business").value;
+          const name = document.getElementById("name").value;
+          const mail = document.getElementById("email").value;
+          const productid = document.getElementById("productid").value;
+          const phone = document.getElementById("phone").value;
+
+          // Enviar via AJAX
+          var xhr = new XMLHttpRequest();
+          xhr.open("POST", "https://teal-alpaca-302284.hostingersite.com/Softexpert/senddata.php", true);
+          xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+          xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+              // Reabilita o botão depois da resposta
+              button.disabled = false;
+              button.innerHTML = "Enviar";
+
+              if (xhr.status === 200) {
                 var response = JSON.parse(xhr.responseText);
-
-                // Verifica se veio o erro específico:
                 if (response.status === "error" && response.message === "Já existe um registro com este e-mail") {
-                    // Esconde título e form
-                    document.querySelector(".form-title h2").style.display = "none";
-                    document.querySelector(".fields").style.display = "none";
-                    document.querySelector(".sucess").style.display = "none";
+                  // Esconde título e form
+                  document.querySelector(".form-title h2").style.display = "none";
+                  document.querySelector(".fields").style.display = "none";
+                  document.querySelector(".sucess").style.display = "none";
 
-                    // Altera a div de erro para a mensagem específica + botão de voltar
-                    var errorContainer = document.querySelector(".error");
-                    errorContainer.innerHTML = `
-                      <h3 style="color: #4b61aa;font-family: 'Open Sans', sans-serif;margin: 0 0 15px;font-size: 22px;">
-                        Já existe um registro com este e-mail.
-                      </h3>
-                      <button id="voltarBtn"
-                        style="background-color: #3db17d; color: white; padding: 10px 60px; border: none; border-radius: 5px; font-family: 'Open Sans', sans-serif; font-size: 16px; cursor: pointer; transition: background-color 0.3s ease;">
-                        Voltar
-                      </button>
-                    `;
-                    errorContainer.style.display = "block";
+                  // Altera a div de erro para a mensagem específica + botão de voltar
+                  var errorContainer = document.querySelector(".error");
+                  errorContainer.innerHTML = `
+                    <h3 style="color: #4b61aa;font-family: 'Open Sans', sans-serif;margin: 0 0 15px;font-size: 22px;">
+                      Já existe um registro com este e-mail.
+                    </h3>
+                    <button id="voltarBtn"
+                      style="background-color: #3db17d; color: white; padding: 10px 60px; border: none; border-radius: 5px; font-family: 'Open Sans', sans-serif; font-size: 16px; cursor: pointer;">
+                      Voltar
+                    </button>
+                  `;
+                  errorContainer.style.display = "block";
 
-                    // Ao clicar em "Voltar", resetar a popup e repopular os campos com os dados anteriores
-                    document.getElementById("voltarBtn").addEventListener("click", function() {
-                        // Restaura o conteúdo padrão de erro ou esconde a div
-                        errorContainer.innerHTML = 
-                          `<p>Ocorreu um erro no envio de seus dados. Tente novamente</p>`;
-                        errorContainer.style.display = "none";
+                  // Botão "Voltar"
+                  document.getElementById("voltarBtn").addEventListener("click", function() {
+                    errorContainer.innerHTML = `<p>Ocorreu um erro no envio de seus dados. Tente novamente</p>`;
+                    errorContainer.style.display = "none";
 
-                        // Esconde modal e overlay
-                        document.querySelector(".modal-layout").style.display = "none";
-                        document.querySelector(".modal-overlay").style.display = "none";
+                    // Fecha modal
+                    document.querySelector(".modal-layout").style.display = "none";
+                    document.querySelector(".modal-overlay").style.display = "none";
 
-                        // Mostra novamente o título e o formulário para que o usuário possa tentar de novo
-                        document.querySelector(".form-title h2").style.display = "block";
-                        document.querySelector(".fields").style.display = "block";
+                    // Título e formulário de volta
+                    document.querySelector(".form-title h2").style.display = "block";
+                    document.querySelector(".fields").style.display = "block";
 
-                        // Repopular os campos com os dados preenchidos anteriormente
-                        document.getElementById("business").value = business;
-                        document.getElementById("name").value = name;
-                        document.getElementById("email").value = mail;
-                        document.getElementById("phone").value = phone;
-                        document.getElementById("productid").value = productid;
-
-                        // Restaura o botão "Enviar"
-                        button.disabled = false;
-                        button.innerHTML = "Enviar";
-
-                        // Reabre o modal e overlay
-                        document.querySelector(".modal-layout").style.display = "block";
-                        document.querySelector(".modal-overlay").style.display = "block";
-                    });
+                    // Repopular campos
+                    document.getElementById("business").value = business;
+                    document.getElementById("name").value = name;
+                    document.getElementById("email").value = mail;
+                    document.getElementById("phone").value = phone;
+                    document.getElementById("productid").value = productid;
+                  });
 
                 } else {
-                    // Caso não seja esse erro específico, considera sucesso
-                    document.querySelector(".form-title h2").style.display = "none";
-                    document.querySelector(".fields").style.display = "none";
-                    document.querySelector(".sucess").innerHTML = 
-                      `<h3>Seus dados de acesso foram enviados para o seu e-mail!</h3>
-                       <p>Se precisar de ajuda entre em contato através do: 
-                         <a href='mailto:sestore@softexpert.com'>sestore@softexpert.com</a>
-                       </p>`;
-                    document.querySelector(".sucess").style.display = "block";
+                  // Caso não seja esse erro específico, considera sucesso
+                  document.querySelector(".form-title h2").style.display = "none";
+                  document.querySelector(".fields").style.display = "none";
+                  document.querySelector(".sucess").innerHTML = `
+                    <h3>Seus dados de acesso foram enviados para o seu e-mail!</h3>
+                    <p>Se precisar de ajuda entre em contato através do: 
+                      <a href='mailto:sestore@softexpert.com'>sestore@softexpert.com</a>
+                    </p>
+                  `;
+                  document.querySelector(".sucess").style.display = "block";
                 }
+              } else {
+                // Erro genérico (status != 200)
+                document.querySelector(".error").style.display = "block";
+              }
             }
-            else if (xhr.readyState === 4) {
-                // Se chegou aqui com xhr.status diferente de 200, é um erro genérico
-                document.querySelector(".error").style.display = "block"; 
-            }
-        };
+          };
 
-        // Envia os dados
-        xhr.send(
-          "business=" + encodeURIComponent(business) + 
-          "&name=" + encodeURIComponent(name) + 
-          "&mail=" + encodeURIComponent(mail) + 
-          "&productid=" + encodeURIComponent(productid) + 
-          "&phone=" + encodeURIComponent(phone)
-        );
-    }
-  });
-
-  // Exemplo de função para alternar a exibição de "consulta" e "resultado"
-  if (document.getElementById("link-nova-consulta")) {
-    document.getElementById("link-nova-consulta").addEventListener("click", function () {
-        var consulta = document.getElementById("consulta");
-        var resultado = document.getElementById("area-resultado");
-        consulta.classList.toggle("ativo");
-        resultado.classList.toggle("ativo");
-        resultado.classList.remove("ativo");
-    });
-  }
-});
-
-
-
-
-
-  document.addEventListener("DOMContentLoaded", function () {
-    function initializeScript() {
-      setTimeout(function () { // Aguarda 2 segundos antes de executar o script
-        console.log("Initialized GTM script");
-
-        function updateBadgeText() {
-          var skuValueElement = document.querySelector(
-            ".vtex-store-components-3-x-skuSelectorSelectorImageValue");
-          var badgeTextElement = document.querySelector(
-            ".vtex-product-specification-badges-0-x-badgeText--mensal-exceto-para-pagamento-a-vista");
-
-          if (skuValueElement && badgeTextElement) {
-            var skuValueText = skuValueElement.textContent.trim();
-
-            if (skuValueText === "Sou cliente  e quero pagar à vista") {
-              badgeTextElement.textContent = "à vista";
-            } else if (skuValueText === "Sou cliente  e quero pagar em 12x" || skuValueText ===
-              "Quero ser cliente SoftExpert (leia abaixo sobre: Serviços Adicionais)") {
-              badgeTextElement.textContent = "mensal";
-            }
-          }
-        }
-
-        function checkElementsAndObserve() {
-          var flexRowWrapper = document.querySelector(".vtex-flex-layout-0-x-flexRow");
-          var skuSelectorContainer = document.querySelector(
-            ".vtex-store-components-3-x-skuSelectorSelectContainer");
-
-          if (flexRowWrapper && skuSelectorContainer) {
-            updateBadgeText();
-
-            var selectElement = skuSelectorContainer.querySelector("select");
-            if (selectElement) {
-              selectElement.addEventListener("change", function () {
-                setTimeout(updateBadgeText, 100);
-              });
-
-              var observer = new MutationObserver(updateBadgeText);
-              observer.observe(document.querySelector(
-                ".vtex-store-components-3-x-skuSelectorSelectorImageValue"), {
-                childList: true,
-                subtree: true
-              });
-            }
-          }
-        }
-
-        checkElementsAndObserve();
-      }, 6000); // 2000ms = 2 segundos
-    }
-
-    // Inicializa o script ao carregar a página
-    initializeScript();
-
-    // Adiciona um listener para mudanças de conteúdo em páginas SPA
-    window.addEventListener("popstate", function () {
-      initializeScript(); // Reexecuta o script sempre que o estado da URL mudar
+          // Dispara o envio
+          xhr.send(
+            "business=" + encodeURIComponent(business) + 
+            "&name=" + encodeURIComponent(name) + 
+            "&mail=" + encodeURIComponent(mail) + 
+            "&productid=" + encodeURIComponent(productid) + 
+            "&phone=" + encodeURIComponent(phone)
+          );
+        });
+      }
     });
 
-    // Também pode ser necessário observar mudanças no DOM, caso a SPA modifique conteúdo sem mudar a URL
-    const observer = new MutationObserver(function () {
+    /*
+      Scripts adicionais para atualizações de badges, GTM, etc.
+      Se seu ambiente é SPA, mantenha estes observers para re-inicializar 
+      lógicas quando a página muda de estado sem recarregar.
+    */
+    document.addEventListener("DOMContentLoaded", function () {
+      function initializeScript() {
+        setTimeout(function () {
+          console.log("Initialized GTM script");
+
+          function updateBadgeText() {
+            var skuValueElement = document.querySelector(".vtex-store-components-3-x-skuSelectorSelectorImageValue");
+            var badgeTextElement = document.querySelector(".vtex-product-specification-badges-0-x-badgeText--mensal-exceto-para-pagamento-a-vista");
+
+            if (skuValueElement && badgeTextElement) {
+              var skuValueText = skuValueElement.textContent.trim();
+              if (skuValueText === "Sou cliente  e quero pagar à vista") {
+                badgeTextElement.textContent = "à vista";
+              } else if (
+                skuValueText === "Sou cliente  e quero pagar em 12x" ||
+                skuValueText === "Quero ser cliente SoftExpert (leia abaixo sobre: Serviços Adicionais)"
+              ) {
+                badgeTextElement.textContent = "mensal";
+              }
+            }
+          }
+
+          function checkElementsAndObserve() {
+            var flexRowWrapper = document.querySelector(".vtex-flex-layout-0-x-flexRow");
+            var skuSelectorContainer = document.querySelector(".vtex-store-components-3-x-skuSelectorSelectContainer");
+
+            if (flexRowWrapper && skuSelectorContainer) {
+              updateBadgeText();
+
+              var selectElement = skuSelectorContainer.querySelector("select");
+              if (selectElement) {
+                selectElement.addEventListener("change", function () {
+                  setTimeout(updateBadgeText, 100);
+                });
+                var observer = new MutationObserver(updateBadgeText);
+                var target = document.querySelector(".vtex-store-components-3-x-skuSelectorSelectorImageValue");
+                if (target) {
+                  observer.observe(target, { childList: true, subtree: true });
+                }
+              }
+            }
+          }
+
+          checkElementsAndObserve();
+        }, 6000);
+      }
+
       initializeScript();
-    });
 
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true
+      window.addEventListener("popstate", function () {
+        initializeScript();
+      });
+
+      const observer = new MutationObserver(function () {
+        initializeScript();
+      });
+      observer.observe(document.body, { childList: true, subtree: true });
     });
-  });
-  
-</script>
+  </script>
+

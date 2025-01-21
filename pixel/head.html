@@ -384,4 +384,73 @@
       });
     }
   });
+
+
+
+  
+
+   /*
+      Scripts adicionais para atualizações de badges, GTM, etc.
+      Se seu ambiente é SPA, mantenha estes observers para re-inicializar 
+      lógicas quando a página muda de estado sem recarregar.
+    */
+    document.addEventListener("DOMContentLoaded", function () {
+      function initializeScript() {
+        setTimeout(function () {
+          console.log("Initialized GTM script");
+
+          function updateBadgeText() {
+            var skuValueElement = document.querySelector(".vtex-store-components-3-x-skuSelectorSelectorImageValue");
+            var badgeTextElement = document.querySelector(".vtex-product-specification-badges-0-x-badgeText--mensal-exceto-para-pagamento-a-vista");
+
+            if (skuValueElement && badgeTextElement) {
+              var skuValueText = skuValueElement.textContent.trim();
+              if (skuValueText === "Sou cliente  e quero pagar à vista") {
+                badgeTextElement.textContent = "à vista";
+              } else if (
+                skuValueText === "Sou cliente  e quero pagar em 12x" ||
+                skuValueText === "Quero ser cliente SoftExpert (leia abaixo sobre: Serviços Adicionais)"
+              ) {
+                badgeTextElement.textContent = "mensal";
+              }
+            }
+          }
+
+          function checkElementsAndObserve() {
+            var flexRowWrapper = document.querySelector(".vtex-flex-layout-0-x-flexRow");
+            var skuSelectorContainer = document.querySelector(".vtex-store-components-3-x-skuSelectorSelectContainer");
+
+            if (flexRowWrapper && skuSelectorContainer) {
+              updateBadgeText();
+
+              var selectElement = skuSelectorContainer.querySelector("select");
+              if (selectElement) {
+                selectElement.addEventListener("change", function () {
+                  setTimeout(updateBadgeText, 100);
+                });
+                var observer = new MutationObserver(updateBadgeText);
+                var target = document.querySelector(".vtex-store-components-3-x-skuSelectorSelectorImageValue");
+                if (target) {
+                  observer.observe(target, { childList: true, subtree: true });
+                }
+              }
+            }
+          }
+
+          checkElementsAndObserve();
+        }, 6000);
+      }
+
+      initializeScript();
+
+      window.addEventListener("popstate", function () {
+        initializeScript();
+      });
+
+      const observer = new MutationObserver(function () {
+        initializeScript();
+      });
+      observer.observe(document.body, { childList: true, subtree: true });
+    });
+
 </script>

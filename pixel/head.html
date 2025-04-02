@@ -486,6 +486,31 @@
           }
 
           checkElementsAndObserve();
+
+// Novo código para produtos relacionados
+function checkRelatedProducts() {
+      const relatedProducts = document.querySelector('.vtex-shelf-1-x-relatedProducts');
+      const flexRowRelated = document.querySelector('.vtex-flex-layout-0-x-flexRow--container-related');
+
+      if (relatedProducts && flexRowRelated) {
+        const updateVisibility = () => {
+          flexRowRelated.style.display = relatedProducts.children.length === 0 ? 'none' : '';
+        };
+
+        updateVisibility();
+        
+        const observer = new MutationObserver(updateVisibility);
+        observer.observe(relatedProducts, {
+          childList: true,
+          subtree: true
+        });
+      }
+    }
+
+    checkRelatedProducts();
+
+
+
         }, 6000);
       }
 

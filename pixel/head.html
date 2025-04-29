@@ -478,14 +478,22 @@
           }
           // Condições em Inglês
           else if (
-            skuValueText === "I am a SoftExpert's customer" ||
+            skuValueText === "I am a SoftExpert's customer"
+          ) {
+            badgeTextElement.textContent = "in cash";
+          }
+          else if (
             skuValueText === "I want to become a SoftExpert customer (read below about: Additional Services)"
           ) {
             badgeTextElement.textContent = "monthly";
           }
           // Condições em Espanhol
           else if (
-            skuValueText === "Soy cliente de SoftExpert" ||
+            skuValueText === "Soy cliente de SoftExpert"
+          ) {
+            badgeTextElement.textContent = "em efectivo";
+          }
+          else if (
             skuValueText === "Quiero ser cliente de SoftExpert (lea más abajo sobre: Servicios Adicionales)"
           ) {
             badgeTextElement.textContent = "mensual";

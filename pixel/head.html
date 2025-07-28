@@ -454,11 +454,11 @@
 
         // Seleciona o elemento correto baseado no idioma
         if (skuValueText === "I am a SoftExpert's customer" || 
-            skuValueText === "I want to become a SoftExpert customer (read below about: Additional Services)") {
+            skuValueText === "I want to be a SoftExpert client (read below: Services included)") {
           badgeTextElement = document.querySelector(".vtex-product-specification-badges-0-x-badgeText--monthly-except-for-cash-payment");
         } 
         else if (skuValueText === "Soy cliente de SoftExpert" || 
-                 skuValueText === "Quiero ser cliente de SoftExpert (lea más abajo sobre: Servicios Adicionales)") {
+                 skuValueText === "Quiero ser cliente de SoftExpert (leer abajo: Servicios incluidos)") {
           badgeTextElement = document.querySelector(".vtex-product-specification-badges-0-x-badgeText--mensual-excepto-pago-en-efectivo");
         } 
         else {
@@ -472,7 +472,7 @@
             badgeTextElement.textContent = "à vista";
           } else if (
             skuValueText === "Sou cliente  e quero pagar em 12x" ||
-            skuValueText === "Quero ser cliente SoftExpert (leia abaixo sobre: Serviços Adicionais)"
+            skuValueText === "Quero ser cliente SoftExpert (leia abaixo: Serviços inclusos)"
           ) {
             badgeTextElement.textContent = "mensal";
           }

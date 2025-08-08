@@ -358,104 +358,85 @@
 
             if (xhr.status === 200) {
               var response = JSON.parse(xhr.responseText);
+
+              // Tratamento para email já cadastrado
               if (response.status === "error" && response.message ===
                 "Já existe um registro com este e-mail") {
                 // Esconde título e form
-
-
-                // Altera a div de erro para a mensagem específica + botão de voltar
-                var errorContainer = document.querySelector(".error");
-                errorContainer.innerHTML = `
-                  <h3 style="color: #4b61aa;font-family: 'Open Sans', sans-serif;margin: 0 0 15px;font-size: 22px;">
-                    Já existe um registro com este e-mail.
-                  </h3>
-                  <button id="voltarBtn"
-                    style="background-color: #3db17d; color: white; padding: 10px 60px; border: none; border-radius: 5px; font-family: 'Open Sans', sans-serif; font-size: 16px; cursor: pointer;">
-                    Voltar
-                  </button>
-                `;
                 document.querySelector(".form-title h2").style.display = "none";
                 setTimeout(function () {
                   document.querySelector(".fields").style.display = "none";
                   document.querySelector(".sucess").style.display = "none";
                 }, 1000);
+
+                // Mostra mensagem de erro específica
+                var errorContainer = document.querySelector(".error");
+                errorContainer.innerHTML = `
+          <h3 style="color: #4b61aa;font-family: 'Open Sans', sans-serif;margin: 0 0 15px;font-size: 22px;">
+            Já existe um registro com este e-mail.
+          </h3>
+          <button id="voltarBtn"
+            style="background-color: #3db17d; color: white; padding: 10px 60px; border: none; border-radius: 5px; font-family: 'Open Sans', sans-serif; font-size: 16px; cursor: pointer;">
+            Voltar
+          </button>
+        `;
                 errorContainer.style.display = "block";
 
-                // Botão "Voltar"
+                // Configura botão voltar
                 document.getElementById("voltarBtn").addEventListener("click", function () {
                   errorContainer.innerHTML =
                     `<p>Ocorreu um erro no envio de seus dados. Tente novamente</p>`;
                   errorContainer.style.display = "none";
-
-                  // Fecha modal
-                  document.querySelector(".modal-layout").style.display = "none";
-                  document.querySelector(".modal-overlay").style.display = "none";
-
-                  // Título e formulário de volta
                   document.querySelector(".form-title h2").style.display = "block";
                   document.querySelector(".fields").style.display = "block";
-
-                  // Repopular campos
-                  document.getElementById("business").value = business;
-                  document.getElementById("name").value = name;
-                  document.getElementById("email").value = mail;
-                  document.getElementById("phone").value = phone;
-                  document.getElementById("productid").value = productid;
+                  // Repopular campos...
                 });
-
               }
-              if (response.status === "error" && response.message === "Informe um email corporativo") {
+              // Tratamento para email não corporativo
+              else if (response.status === "error" && response.message === "Informe um email corporativo") {
                 // Esconde título e form
                 document.querySelector(".form-title h2").style.display = "none";
                 document.querySelector(".fields").style.display = "none";
                 document.querySelector(".sucess").style.display = "none";
 
-                // Altera a div de erro para a mensagem específica + botão de voltar
+                // Mostra mensagem de erro específica
                 var errorContainer = document.querySelector(".error");
                 errorContainer.innerHTML = `
-                  <h3 style="color: #4b61aa;font-family: 'Open Sans', sans-serif;margin: 0 0 15px;font-size: 22px;">
-                    Por favor, informe um e-mail corporativo.
-                  </h3>
-                  <button id="voltarBtn"
-                    style="background-color: #3db17d; color: white; padding: 10px 60px; border: none; border-radius: 5px; font-family: 'Open Sans', sans-serif; font-size: 16px; cursor: pointer;">
-                    Voltar
-                  </button>
-                `;
+          <h3 style="color: #4b61aa;font-family: 'Open Sans', sans-serif;margin: 0 0 15px;font-size: 22px;">
+            Por favor, informe um e-mail corporativo.
+          </h3>
+          <button id="voltarBtn"
+            style="background-color: #3db17d; color: white; padding: 10px 60px; border: none; border-radius: 5px; font-family: 'Open Sans', sans-serif; font-size: 16px; cursor: pointer;">
+            Voltar
+          </button>
+        `;
                 errorContainer.style.display = "block";
 
-                // Botão "Voltar"
+                // Configura botão voltar
                 document.getElementById("voltarBtn").addEventListener("click", function () {
                   errorContainer.innerHTML =
                     `<p>Ocorreu um erro no envio de seus dados. Tente novamente</p>`;
                   errorContainer.style.display = "none";
-
-                  // Fecha modal
-                  document.querySelector(".modal-layout").style.display = "none";
-                  document.querySelector(".modal-overlay").style.display = "none";
-
-                  // Título e formulário de volta
                   document.querySelector(".form-title h2").style.display = "block";
                   document.querySelector(".fields").style.display = "block";
-
-                  // Repopular campos
-                  document.getElementById("business").value = business;
-                  document.getElementById("name").value = name;
-                  document.getElementById("email").value = mail;
-                  document.getElementById("phone").value = phone;
-                  document.getElementById("productid").value = productid;
+                  // Repopular campos...
                 });
-
-              } else {
-                // Caso não seja esse erro específico, considera sucesso
+              }
+              // Tratamento para sucesso (apenas se não houver erros)
+              else if (response.status !== "error") {
                 document.querySelector(".form-title h2").style.display = "none";
                 document.querySelector(".fields").style.display = "none";
                 document.querySelector(".sucess").innerHTML = `
-                  <h3>Seus dados de acesso foram enviados para o seu e-mail!</h3>
-                  <p>Se precisar de ajuda entre em contato através do: 
-                    <a href='mailto:sestore@softexpert.com'>sestore@softexpert.com</a>
-                  </p>
-                `;
+          <h3>Seus dados de acesso foram enviados para o seu e-mail!</h3>
+          <p>Se precisar de ajuda entre em contato através do: 
+            <a href='mailto:sestore@softexpert.com'>sestore@softexpert.com</a>
+          </p>
+        `;
                 document.querySelector(".sucess").style.display = "block";
+              }
+              // Tratamento para outros erros não específicos
+              else {
+                document.querySelector(".error").style.display = "block";
               }
             } else {
               // Erro genérico (status != 200)

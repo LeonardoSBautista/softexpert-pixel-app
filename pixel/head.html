@@ -6,26 +6,27 @@
       width: 90vw;
     }
   }
+
   .error {
     text-align: center;
   }
 
   .vtex-login-2-x-options {
-    min-width: auto!important;
-}
+    min-width: auto !important;
+  }
 
-.vtex-login-2-x-contentForm {
-    min-width: auto!important;
-}
+  .vtex-login-2-x-contentForm {
+    min-width: auto !important;
+  }
 
-.vtex-login-2-x-contentAlwaysWithOptions {
+  .vtex-login-2-x-contentAlwaysWithOptions {
     flex-direction: column;
     width: 100%;
-}
+  }
 
-    .vtex-login-2-x-contentAlwaysWithOptions {
-        border-radius: 10px;
-    }
+  .vtex-login-2-x-contentAlwaysWithOptions {
+    border-radius: 10px;
+  }
 
 
   .modal-overlay {
@@ -34,53 +35,57 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.5);
+    background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(5px);
     z-index: 9998;
     display: none;
   }
 
-  .vtex-product-specification-badges-0-x-badgeContainer.vtex-product-specification-badges-0-x-badgeContainer--payment-type.bg-base.flex.items-center.justify-center\"
- {
+  .vtex-product-specification-badges-0-x-badgeContainer.vtex-product-specification-badges-0-x-badgeContainer--payment-type.bg-base.flex.items-center.justify-center\" {
     background-color: transparent;
-}
+  }
 
-.vtex-product-specification-badges-0-x-badgeContainer.vtex-product-specification-badges-0-x-badgeContainer--tipo-de-pago.bg-base.flex.items-center.justify-center\" {
+  .vtex-product-specification-badges-0-x-badgeContainer.vtex-product-specification-badges-0-x-badgeContainer--tipo-de-pago.bg-base.flex.items-center.justify-center\" {
     background-color: transparent;
-}
+  }
 
 
   .modal-layout {
     position: fixed;
     top: 50%;
     left: 50%;
-    transform: translate(-50%,-50%);
+    transform: translate(-50%, -50%);
     background-color: white;
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     z-index: 9999;
     width: 90%;
     max-width: 500px;
     display: none;
   }
+
   .modal-layout h2,
   .modal-layout p {
     text-align: center;
     font-family: "Open Sans", sans-serif;
     margin: 0 0 15px;
   }
+
   .modal-layout p {
     color: #717786;
   }
+
   .modal-layout h2 {
     color: #4B61AA;
   }
+
   .modal-layout .fields {
     display: flex;
     flex-direction: column;
     align-items: center;
   }
+
   .modal-layout .fields input {
     width: 90%;
     max-width: 400px;
@@ -91,9 +96,11 @@
     padding: 10px;
     font-size: 16px;
   }
+
   .modal-layout .fields input::placeholder {
     color: #999;
   }
+
   .modal-layout button#send-data {
     background-color: #3db17d;
     color: white;
@@ -105,6 +112,7 @@
     cursor: pointer;
     transition: background-color 0.3s ease;
   }
+
   .modal-layout button#send-data:hover {
     background-color: #339b6c;
   }
@@ -114,6 +122,7 @@
     margin-right: auto;
     margin-bottom: 11px;
   }
+
   .sucess h3 {
     color: #4b61aa;
     text-align: center;
@@ -121,9 +130,11 @@
     margin: 0 0 15px;
     font-size: 22px;
   }
+
   form.fields {
     text-align: center;
   }
+
 </style>
 
 <div class="modal-overlay"></div>
@@ -139,9 +150,7 @@
     <input type="text" placeholder="Telefone" id="phone" required />
     <input class="productid" style="display: none" type="text" placeholder="Id do Produto" id="productid" />
 
-    <div class="g-recaptcha" 
-         data-sitekey="6LfhWLgqAAAAANP7nYodiryiCuv7Wll68H2mLbrd" 
-         data-action="LOGIN">
+    <div class="g-recaptcha" data-sitekey="6LfhWLgqAAAAANP7nYodiryiCuv7Wll68H2mLbrd" data-action="LOGIN">
     </div>
 
     <!-- Botão do tipo "submit" -->
@@ -164,8 +173,10 @@
     const checkInterval = 2000; // Intervalo de 2 segundos
 
     const monitorElement = () => {
-      const element = document.querySelector('.vtex-rich-text-0-x-wrapper.vtex-rich-text-0-x-wrapper--test-button');
-      const productIdElement = document.querySelector('.vtex-product-specification-badges-0-x-badgeContainer--id-processo-sesuite span');
+      const element = document.querySelector(
+        '.vtex-rich-text-0-x-wrapper.vtex-rich-text-0-x-wrapper--test-button');
+      const productIdElement = document.querySelector(
+        '.vtex-product-specification-badges-0-x-badgeContainer--id-processo-sesuite span');
 
       // Se existir ID de produto, exibe o botão de teste
       if (productIdElement) {
@@ -191,7 +202,8 @@
               }
 
               // Buscar o valor do span e atribuí-lo ao input productid
-              const productSpan = document.querySelector('.vtex-product-specification-badges-0-x-badgeContainer--id-processo-sesuite span');
+              const productSpan = document.querySelector(
+                '.vtex-product-specification-badges-0-x-badgeContainer--id-processo-sesuite span');
               if (productSpan) {
                 const productIdValue = productSpan.textContent.trim();
                 document.getElementById('productid').value = productIdValue;
@@ -256,7 +268,10 @@
       }
     });
 
-    observer.observe(document.body, { childList: true, subtree: true });
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
 
     // Fechar o modal ao clicar no overlay
     const overlay = document.querySelector('.modal-overlay');
@@ -291,7 +306,7 @@
     // --------------------------------------------------
     const form = document.querySelector('.fields');
     if (form) {
-      form.addEventListener('submit', function(event) {
+      form.addEventListener('submit', function (event) {
         event.preventDefault(); // Impede o envio "nativo" do form
 
         // Verificação do reCAPTCHA
@@ -343,11 +358,10 @@
 
             if (xhr.status === 200) {
               var response = JSON.parse(xhr.responseText);
-              if (response.status === "error" && response.message === "Já existe um registro com este e-mail") {
+              if (response.status === "error" && response.message ===
+                "Já existe um registro com este e-mail") {
                 // Esconde título e form
-                document.querySelector(".form-title h2").style.display = "none";
-                document.querySelector(".fields").style.display = "none";
-                document.querySelector(".sucess").style.display = "none";
+
 
                 // Altera a div de erro para a mensagem específica + botão de voltar
                 var errorContainer = document.querySelector(".error");
@@ -360,11 +374,17 @@
                     Voltar
                   </button>
                 `;
+                document.querySelector(".form-title h2").style.display = "none";
+                setTimeout(function () {
+                  document.querySelector(".fields").style.display = "none";
+                  document.querySelector(".sucess").style.display = "none";
+                }, 1000);
                 errorContainer.style.display = "block";
 
                 // Botão "Voltar"
-                document.getElementById("voltarBtn").addEventListener("click", function() {
-                  errorContainer.innerHTML = `<p>Ocorreu um erro no envio de seus dados. Tente novamente</p>`;
+                document.getElementById("voltarBtn").addEventListener("click", function () {
+                  errorContainer.innerHTML =
+                    `<p>Ocorreu um erro no envio de seus dados. Tente novamente</p>`;
                   errorContainer.style.display = "none";
 
                   // Fecha modal
@@ -383,7 +403,8 @@
                   document.getElementById("productid").value = productid;
                 });
 
-              }                if (response.status === "error" && response.message === "Informe um email corporativo") {
+              }
+              if (response.status === "error" && response.message === "Informe um email corporativo") {
                 // Esconde título e form
                 document.querySelector(".form-title h2").style.display = "none";
                 document.querySelector(".fields").style.display = "none";
@@ -403,8 +424,9 @@
                 errorContainer.style.display = "block";
 
                 // Botão "Voltar"
-                document.getElementById("voltarBtn").addEventListener("click", function() {
-                  errorContainer.innerHTML = `<p>Ocorreu um erro no envio de seus dados. Tente novamente</p>`;
+                document.getElementById("voltarBtn").addEventListener("click", function () {
+                  errorContainer.innerHTML =
+                    `<p>Ocorreu um erro no envio de seus dados. Tente novamente</p>`;
                   errorContainer.style.display = "none";
 
                   // Fecha modal
@@ -423,15 +445,7 @@
                   document.getElementById("productid").value = productid;
                 });
 
-              } 
-              
-              
-
-
-
-              
-            
-              else {
+              } else {
                 // Caso não seja esse erro específico, considera sucesso
                 document.querySelector(".form-title h2").style.display = "none";
                 document.querySelector(".fields").style.display = "none";
@@ -452,10 +466,10 @@
 
         // Dispara o envio
         xhr.send(
-          "business=" + encodeURIComponent(business) + 
-          "&name=" + encodeURIComponent(name) + 
-          "&mail=" + encodeURIComponent(mail) + 
-          "&productid=" + encodeURIComponent(productid) + 
+          "business=" + encodeURIComponent(business) +
+          "&name=" + encodeURIComponent(name) +
+          "&mail=" + encodeURIComponent(mail) +
+          "&productid=" + encodeURIComponent(productid) +
           "&phone=" + encodeURIComponent(phone)
         );
       });
@@ -464,132 +478,139 @@
 
 
 
-  
 
-   /*
-      Scripts adicionais para atualizações de badges, GTM, etc.
-      Se seu ambiente é SPA, mantenha estes observers para re-inicializar 
-      lógicas quando a página muda de estado sem recarregar.
-    */
-    document.addEventListener("DOMContentLoaded", function () {
-  function initializeScript() {
-    setTimeout(function () {
-      console.log("Initialized GTM script");
 
-      function updateBadgeText() {
-        var skuValueElement = document.querySelector(".vtex-store-components-3-x-skuSelectorSelectorImageValue");
-        var badgeTextElement;
-        var skuValueText = skuValueElement ? skuValueElement.textContent.trim() : '';
+  /*
+     Scripts adicionais para atualizações de badges, GTM, etc.
+     Se seu ambiente é SPA, mantenha estes observers para re-inicializar 
+     lógicas quando a página muda de estado sem recarregar.
+   */
+  document.addEventListener("DOMContentLoaded", function () {
+    function initializeScript() {
+      setTimeout(function () {
+        console.log("Initialized GTM script");
 
-        // Seleciona o elemento correto baseado no idioma
-        if (skuValueText === "I am a SoftExpert's customer" || 
+        function updateBadgeText() {
+          var skuValueElement = document.querySelector(
+            ".vtex-store-components-3-x-skuSelectorSelectorImageValue");
+          var badgeTextElement;
+          var skuValueText = skuValueElement ? skuValueElement.textContent.trim() : '';
+
+          // Seleciona o elemento correto baseado no idioma
+          if (skuValueText === "I am a SoftExpert's customer" ||
             skuValueText === "I want to be a SoftExpert client (read below: Services included)") {
-          badgeTextElement = document.querySelector(".vtex-product-specification-badges-0-x-badgeText--monthly-except-for-cash-payment");
-        } 
-        else if (skuValueText === "Soy cliente de SoftExpert" || 
-                 skuValueText === "Quiero ser cliente de SoftExpert (leer abajo: Servicios incluidos)") {
-          badgeTextElement = document.querySelector(".vtex-product-specification-badges-0-x-badgeText--mensual-excepto-pago-en-efectivo");
-        } 
-        else {
-          // Default para Português
-          badgeTextElement = document.querySelector(".vtex-product-specification-badges-0-x-badgeText--mensal-exceto-para-pagamento-a-vista");
-        }
+            badgeTextElement = document.querySelector(
+              ".vtex-product-specification-badges-0-x-badgeText--monthly-except-for-cash-payment");
+          } else if (skuValueText === "Soy cliente de SoftExpert" ||
+            skuValueText === "Quiero ser cliente de SoftExpert (leer abajo: Servicios incluidos)") {
+            badgeTextElement = document.querySelector(
+              ".vtex-product-specification-badges-0-x-badgeText--mensual-excepto-pago-en-efectivo");
+          } else {
+            // Default para Português
+            badgeTextElement = document.querySelector(
+              ".vtex-product-specification-badges-0-x-badgeText--mensal-exceto-para-pagamento-a-vista");
+          }
 
-        if (skuValueElement && badgeTextElement) {
-          // Condições em Português
-          if (skuValueText === "Sou cliente  e quero pagar à vista") {
-            badgeTextElement.textContent = "à vista";
-          } else if (
-            skuValueText === "Sou cliente  e quero pagar em 12x" ||
-            skuValueText === "Quero ser cliente SoftExpert (leia abaixo: Serviços inclusos)"
-          ) {
-            badgeTextElement.textContent = "mensal";
-          }
-          // Condições em Inglês
-          else if (
-            skuValueText === "I am a SoftExpert's customer"
-          ) {
-            badgeTextElement.textContent = "";
-          }
-          else if (
-            skuValueText === "I want to be a SoftExpert client (read below: Services included)"
-          ) {
-            badgeTextElement.textContent = "monthly";
-          }
-          // Condições em Espanhol
-          else if (
-            skuValueText === "Soy cliente de SoftExpert"
-          ) {
-            badgeTextElement.textContent = "";
-          }
-          else if (
-            skuValueText === "Quiero ser cliente de SoftExpert (leer abajo: Servicios incluidos)"
-          ) {
-            badgeTextElement.textContent = "mensual";
-          }
-        }
-      }
-
-      function checkElementsAndObserve() {
-        var flexRowWrapper = document.querySelector(".vtex-flex-layout-0-x-flexRow");
-        var skuSelectorContainer = document.querySelector(".vtex-store-components-3-x-skuSelectorSelectContainer");
-
-        if (flexRowWrapper && skuSelectorContainer) {
-          updateBadgeText();
-
-          var selectElement = skuSelectorContainer.querySelector("select");
-          if (selectElement) {
-            selectElement.addEventListener("change", function () {
-              setTimeout(updateBadgeText, 100);
-            });
-            var observer = new MutationObserver(updateBadgeText);
-            var target = document.querySelector(".vtex-store-components-3-x-skuSelectorSelectorImageValue");
-            if (target) {
-              observer.observe(target, { childList: true, subtree: true });
+          if (skuValueElement && badgeTextElement) {
+            // Condições em Português
+            if (skuValueText === "Sou cliente  e quero pagar à vista") {
+              badgeTextElement.textContent = "à vista";
+            } else if (
+              skuValueText === "Sou cliente  e quero pagar em 12x" ||
+              skuValueText === "Quero ser cliente SoftExpert (leia abaixo: Serviços inclusos)"
+            ) {
+              badgeTextElement.textContent = "mensal";
+            }
+            // Condições em Inglês
+            else if (
+              skuValueText === "I am a SoftExpert's customer"
+            ) {
+              badgeTextElement.textContent = "";
+            } else if (
+              skuValueText === "I want to be a SoftExpert client (read below: Services included)"
+            ) {
+              badgeTextElement.textContent = "monthly";
+            }
+            // Condições em Espanhol
+            else if (
+              skuValueText === "Soy cliente de SoftExpert"
+            ) {
+              badgeTextElement.textContent = "";
+            } else if (
+              skuValueText === "Quiero ser cliente de SoftExpert (leer abajo: Servicios incluidos)"
+            ) {
+              badgeTextElement.textContent = "mensual";
             }
           }
         }
-      }
 
-      checkElementsAndObserve();
+        function checkElementsAndObserve() {
+          var flexRowWrapper = document.querySelector(".vtex-flex-layout-0-x-flexRow");
+          var skuSelectorContainer = document.querySelector(
+            ".vtex-store-components-3-x-skuSelectorSelectContainer");
 
-// Novo código para produtos relacionados
-function checkRelatedProducts() {
-      const relatedProducts = document.querySelector('.vtex-shelf-1-x-relatedProducts');
-      const flexRowRelated = document.querySelector('.vtex-flex-layout-0-x-flexRow--container-related');
+          if (flexRowWrapper && skuSelectorContainer) {
+            updateBadgeText();
 
-      if (relatedProducts && flexRowRelated) {
-        const updateVisibility = () => {
-          flexRowRelated.style.display = relatedProducts.children.length === 0 ? 'none' : '';
-        };
+            var selectElement = skuSelectorContainer.querySelector("select");
+            if (selectElement) {
+              selectElement.addEventListener("change", function () {
+                setTimeout(updateBadgeText, 100);
+              });
+              var observer = new MutationObserver(updateBadgeText);
+              var target = document.querySelector(".vtex-store-components-3-x-skuSelectorSelectorImageValue");
+              if (target) {
+                observer.observe(target, {
+                  childList: true,
+                  subtree: true
+                });
+              }
+            }
+          }
+        }
 
-        updateVisibility();
-        
-        const observer = new MutationObserver(updateVisibility);
-        observer.observe(relatedProducts, {
-          childList: true,
-          subtree: true
-        });
-      }
+        checkElementsAndObserve();
+
+        // Novo código para produtos relacionados
+        function checkRelatedProducts() {
+          const relatedProducts = document.querySelector('.vtex-shelf-1-x-relatedProducts');
+          const flexRowRelated = document.querySelector('.vtex-flex-layout-0-x-flexRow--container-related');
+
+          if (relatedProducts && flexRowRelated) {
+            const updateVisibility = () => {
+              flexRowRelated.style.display = relatedProducts.children.length === 0 ? 'none' : '';
+            };
+
+            updateVisibility();
+
+            const observer = new MutationObserver(updateVisibility);
+            observer.observe(relatedProducts, {
+              childList: true,
+              subtree: true
+            });
+          }
+        }
+
+        checkRelatedProducts();
+
+
+
+      }, 6000);
     }
 
-    checkRelatedProducts();
+    initializeScript();
 
-
-
-        }, 6000);
-      }
-
+    window.addEventListener("popstate", function () {
       initializeScript();
-
-      window.addEventListener("popstate", function () {
-        initializeScript();
-      });
-
-      const observer = new MutationObserver(function () {
-        initializeScript();
-      });
-      observer.observe(document.body, { childList: true, subtree: true });
     });
+
+    const observer = new MutationObserver(function () {
+      initializeScript();
+    });
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+  });
 
 </script>

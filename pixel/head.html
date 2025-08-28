@@ -166,6 +166,46 @@
 </div>
 
 <script>
+
+// Verificar se o caminho da página contém as palavras especificadas
+function verificarPathEaplicarCSS() {
+    // Obter o caminho completo da URL
+    const path = window.location.pathname.toLowerCase();
+    
+    // Palavras-chave para verificar
+    const palavrasChave = ['treinamentos', 'trainings', 'capacitaciones'];
+    
+    // Verificar se alguma palavra-chave está presente no path
+    const encontrouPalavra = palavrasChave.some(palavra => path.includes(palavra));
+    
+    if (encontrouPalavra) {
+        // Criar elemento style
+        const style = document.createElement('style');
+        style.textContent = `
+            .vtex-product-summary-2-x-element--prateleira-geral .vtex-product-summary-2-x-productBrand {
+                color: #002080 !important;
+            }
+        `;
+        
+        // Adicionar o estilo ao head do documento
+        document.head.appendChild(style);
+        
+        console.log('CSS aplicado para páginas de treinamentos/trainings/capacitaciones');
+    }
+}
+
+// Executar quando o documento estiver carregado
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', verificarPathEaplicarCSS);
+} else {
+    verificarPathEaplicarCSS();
+}
+
+
+
+
+
+
   document.addEventListener('DOMContentLoaded', function () {
     console.log('Iniciando monitoramento do DOM para adicionar o evento de clique...');
 
@@ -584,9 +624,6 @@
         }
 
         checkRelatedProducts();
-
-
-
       }, 6000);
     }
 

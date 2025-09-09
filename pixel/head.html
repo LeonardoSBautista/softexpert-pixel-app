@@ -167,38 +167,83 @@
 
 <script>
 
-// Verificar se o caminho da página contém as palavras especificadas
 function verificarPathEaplicarCSS() {
-    // Obter o caminho completo da URL
     const path = window.location.pathname.toLowerCase();
-    
-    // Palavras-chave para verificar
     const palavrasChave = ['treinamentos', 'trainings', 'capacitaciones'];
-    
-    // Verificar se alguma palavra-chave está presente no path
     const encontrouPalavra = palavrasChave.some(palavra => path.includes(palavra));
     
     if (encontrouPalavra) {
-        // Criar elemento style
-        const style = document.createElement('style');
-        style.textContent = `
-            .vtex-product-summary-2-x-element--prateleira-geral .vtex-product-summary-2-x-productBrand {
-                color: #002080 !important;
-            }
-        `;
-        
-        // Adicionar o estilo ao head do documento
-        document.head.appendChild(style);
-        
-        console.log('CSS aplicado para páginas de treinamentos/trainings/capacitaciones');
+        aplicarCSS('#002080'); // Cor para páginas de treinamento
+        console.log('CSS aplicado: cor #002080 para páginas de treinamentos');
+    } else {
+        aplicarCSS('#005BC7'); // Cor padrão para outras páginas
+        console.log('CSS aplicado: cor #005BC7 para outras páginas');
     }
 }
 
-// Executar quando o documento estiver carregado
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', verificarPathEaplicarCSS);
-} else {
+function aplicarCSS(cor) {
+    // Remover estilo anterior se existir
+    removerCSS();
+    
+    // Criar novo estilo
+    const style = document.createElement('style');
+    style.id = 'dynamic-brand-color';
+    style.textContent = `
+        .vtex-product-summary-2-x-element--prateleira-geral .vtex-product-summary-2-x-productBrand {
+            color: ${cor} !important;
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+function removerCSS() {
+    const style = document.getElementById('dynamic-brand-color');
+    if (style) {
+        style.remove();
+    }
+}
+
+// Interceptar mudanças de rota em SPAs
+function interceptarNavegacoes() {
+    // Salvar as funções originais do History API
+    const originalPushState = history.pushState;
+    const originalReplaceState = history.replaceState;
+    
+    // Sobrescrever pushState
+    history.pushState = function() {
+        originalPushState.apply(this, arguments);
+        window.dispatchEvent(new Event('popstate'));
+    };
+
+    // Sobrescrever replaceState
+    history.replaceState = function() {
+        originalReplaceState.apply(this, arguments);
+        window.dispatchEvent(new Event('replacestate'));
+    };
+
+    // Ouvir eventos de mudança de rota
+    window.addEventListener('popstate', verificarPathEaplicarCSS);
+    window.addEventListener('replacestate', verificarPathEaplicarCSS);
+}
+
+// Inicializar
+document.addEventListener('DOMContentLoaded', () => {
     verificarPathEaplicarCSS();
+    interceptarNavegacoes();
+    
+    // Observar cliques em links
+    document.addEventListener('click', (e) => {
+        const link = e.target.closest('a');
+        if (link && link.href) {
+            setTimeout(verificarPathEaplicarCSS, 50);
+        }
+    });
+});
+
+// Executar também se a página já estiver carregada
+if (document.readyState !== 'loading') {
+    verificarPathEaplicarCSS();
+    interceptarNavegacoes();
 }
 
 

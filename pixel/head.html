@@ -166,25 +166,24 @@
 </div>
 
 <script>
-
-function verificarPathEaplicarCSS() {
+  function verificarPathEaplicarCSS() {
     const path = window.location.pathname.toLowerCase();
     const palavrasChave = ['treinamentos', 'trainings', 'capacitaciones'];
     const encontrouPalavra = palavrasChave.some(palavra => path.includes(palavra));
-    
-    if (encontrouPalavra) {
-        aplicarCSS('#002080'); // Cor para páginas de treinamento
-        console.log('CSS aplicado: cor #002080 para páginas de treinamentos');
-    } else {
-        aplicarCSS('#005BC7'); // Cor padrão para outras páginas
-        console.log('CSS aplicado: cor #005BC7 para outras páginas');
-    }
-}
 
-function aplicarCSS(cor) {
+    if (encontrouPalavra) {
+      aplicarCSS('#002080'); // Cor para páginas de treinamento
+      console.log('CSS aplicado: cor #002080 para páginas de treinamentos');
+    } else {
+      aplicarCSS('#005BC7'); // Cor padrão para outras páginas
+      console.log('CSS aplicado: cor #005BC7 para outras páginas');
+    }
+  }
+
+  function aplicarCSS(cor) {
     // Remover estilo anterior se existir
     removerCSS();
-    
+
     // Criar novo estilo
     const style = document.createElement('style');
     style.id = 'dynamic-brand-color';
@@ -194,62 +193,57 @@ function aplicarCSS(cor) {
         }
     `;
     document.head.appendChild(style);
-}
+  }
 
-function removerCSS() {
+  function removerCSS() {
     const style = document.getElementById('dynamic-brand-color');
     if (style) {
-        style.remove();
+      style.remove();
     }
-}
+  }
 
-// Interceptar mudanças de rota em SPAs
-function interceptarNavegacoes() {
+  // Interceptar mudanças de rota em SPAs
+  function interceptarNavegacoes() {
     // Salvar as funções originais do History API
     const originalPushState = history.pushState;
     const originalReplaceState = history.replaceState;
-    
+
     // Sobrescrever pushState
-    history.pushState = function() {
-        originalPushState.apply(this, arguments);
-        window.dispatchEvent(new Event('popstate'));
+    history.pushState = function () {
+      originalPushState.apply(this, arguments);
+      window.dispatchEvent(new Event('popstate'));
     };
 
     // Sobrescrever replaceState
-    history.replaceState = function() {
-        originalReplaceState.apply(this, arguments);
-        window.dispatchEvent(new Event('replacestate'));
+    history.replaceState = function () {
+      originalReplaceState.apply(this, arguments);
+      window.dispatchEvent(new Event('replacestate'));
     };
 
     // Ouvir eventos de mudança de rota
     window.addEventListener('popstate', verificarPathEaplicarCSS);
     window.addEventListener('replacestate', verificarPathEaplicarCSS);
-}
+  }
 
-// Inicializar
-document.addEventListener('DOMContentLoaded', () => {
+  // Inicializar
+  document.addEventListener('DOMContentLoaded', () => {
     verificarPathEaplicarCSS();
     interceptarNavegacoes();
-    
+
     // Observar cliques em links
     document.addEventListener('click', (e) => {
-        const link = e.target.closest('a');
-        if (link && link.href) {
-            setTimeout(verificarPathEaplicarCSS, 50);
-        }
+      const link = e.target.closest('a');
+      if (link && link.href) {
+        setTimeout(verificarPathEaplicarCSS, 50);
+      }
     });
-});
+  });
 
-// Executar também se a página já estiver carregada
-if (document.readyState !== 'loading') {
+  // Executar também se a página já estiver carregada
+  if (document.readyState !== 'loading') {
     verificarPathEaplicarCSS();
     interceptarNavegacoes();
-}
-
-
-
-
-
+  }
 
   document.addEventListener('DOMContentLoaded', function () {
     console.log('Iniciando monitoramento do DOM para adicionar o evento de clique...');
@@ -311,48 +305,59 @@ if (document.readyState !== 'loading') {
 
     const intervalId = setInterval(monitorElement, checkInterval);
 
-    observer = new MutationObserver(() => {
-      console.log('Alteração no DOM detectada. Verificando novamente...');
-      monitorElement();
-
-      // Monitorar a URL e alterar os placeholders e o botão
-      const url = window.location.pathname;
-
-      // Função para alterar o placeholder de um elemento com ID específico
-      function setPlaceholder(id, placeholder) {
-        const element = document.querySelector(`[id="${id}"]`);
+    // Funções seguras para modificar elementos
+    function setPlaceholderSafe(selector, placeholder) {
+      try {
+        const element = document.querySelector(selector);
         if (element) {
-          element.setAttribute('placeholder', placeholder);
+          element.placeholder = placeholder;
         }
+      } catch (error) {
+        console.log('Erro ao definir placeholder para', selector, error);
       }
+    }
 
-      // Função para alterar o texto do botão
-      function setButtonText(selector, text) {
+    function setButtonTextSafe(selector, text) {
+      try {
         const button = document.querySelector(selector);
         if (button) {
           button.textContent = text;
         }
+      } catch (error) {
+        console.log('Erro ao definir texto do botão para', selector, error);
       }
+    }
 
-      // Verificar as condições da URL e aplicar as alterações
-      if (url.includes('/es/contato')) {
-        setPlaceholder('#/properties/email-email-input', 'Correo electrónico comercial');
-        setPlaceholder('#/properties/nome-text-input', 'Nombre completo');
-        setPlaceholder('#/properties/cargo-text-input', 'Posición');
-        setPlaceholder('#/properties/empresa-text-input', 'Empresa');
-        setPlaceholder('#/properties/telefone-text-input', 'Teléfono');
-        setPlaceholder('#/properties/pais-text-input', 'País');
-        setPlaceholder('#/properties/mensagem-textarea-input', 'Mensaje');
-      } else if (url.includes('/contato') && !url.includes('/pt/contato') && !url.includes('/es/contato')) {
-        setPlaceholder('#/properties/email-email-input', 'Business email address');
-        setPlaceholder('#/properties/nome-text-input', 'Full name');
-        setPlaceholder('#/properties/cargo-text-input', 'Position');
-        setPlaceholder('#/properties/empresa-text-input', 'Business');
-        setPlaceholder('#/properties/telefone-text-input', 'Telephone');
-        setPlaceholder('#/properties/pais-text-input', 'Country');
-        setPlaceholder('#/properties/mensagem-textarea-input', 'Message');
-        setButtonText('.vtex-store-form-0-x-formSubmitButton button div', 'Send');
-      }
+    let timeout;
+    observer = new MutationObserver(() => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        console.log('Alteração no DOM detectada. Verificando novamente...');
+        monitorElement();
+
+        // Monitorar a URL e alterar os placeholders e o botão
+        const url = window.location.pathname;
+
+        // Verificar as condições da URL e aplicar as alterações
+        if (url.includes('/es/contato')) {
+          setPlaceholderSafe('[id="#/properties/email-email-input"]', 'Correo electrónico comercial');
+          setPlaceholderSafe('[id="#/properties/nome-text-input"]', 'Nombre completo');
+          setPlaceholderSafe('[id="#/properties/cargo-text-input"]', 'Posición');
+          setPlaceholderSafe('[id="#/properties/empresa-text-input"]', 'Empresa');
+          setPlaceholderSafe('[id="#/properties/telefone-text-input"]', 'Teléfono');
+          setPlaceholderSafe('[id="#/properties/pais-text-input"]', 'País');
+          setPlaceholderSafe('[id="#/properties/mensagem-textarea-input"]', 'Mensaje');
+        } else if (url.includes('/contato') && !url.includes('/pt/contato') && !url.includes('/es/contato')) {
+          setPlaceholderSafe('[id="#/properties/email-email-input"]', 'Business email address');
+          setPlaceholderSafe('[id="#/properties/nome-text-input"]', 'Full name');
+          setPlaceholderSafe('[id="#/properties/cargo-text-input"]', 'Position');
+          setPlaceholderSafe('[id="#/properties/empresa-text-input"]', 'Business');
+          setPlaceholderSafe('[id="#/properties/telefone-text-input"]', 'Telephone');
+          setPlaceholderSafe('[id="#/properties/pais-text-input"]', 'Country');
+          setPlaceholderSafe('[id="#/properties/mensagem-textarea-input"]', 'Message');
+          setButtonTextSafe('.vtex-store-form-0-x-formSubmitButton button div', 'Send');
+        }
+      }, 500);
     });
 
     observer.observe(document.body, {
@@ -447,7 +452,7 @@ if (document.readyState !== 'loading') {
               var response = JSON.parse(xhr.responseText);
               if (response.status === "error" && response.message ===
                 "Já existe um registro com este e-mail") {
-                
+
                 // Esconde título e form
                 document.querySelector(".form-title h2").style.display = "none";
                 document.querySelector(".fields").style.display = "none";
@@ -471,11 +476,11 @@ if (document.readyState !== 'loading') {
                 document.getElementById("voltarBtn").addEventListener("click", function () {
                   // Esconde a mensagem de erro
                   errorContainer.style.display = "none";
-                  
+
                   // Mostra título e formulário novamente
                   document.querySelector(".form-title h2").style.display = "block";
                   document.querySelector(".fields").style.display = "block";
-                  
+
                   // Repopular campos
                   document.getElementById("business").value = business;
                   document.getElementById("name").value = name;
@@ -484,8 +489,7 @@ if (document.readyState !== 'loading') {
                   document.getElementById("productid").value = productid;
                 });
 
-              }
-              else if (response.status === "error" && response.message === "Informe um email corporativo") {
+              } else if (response.status === "error" && response.message === "Informe um email corporativo") {
                 // Esconde título e form
                 document.querySelector(".form-title h2").style.display = "none";
                 document.querySelector(".fields").style.display = "none";
@@ -508,11 +512,11 @@ if (document.readyState !== 'loading') {
                 document.getElementById("voltarBtn").addEventListener("click", function () {
                   // Esconde a mensagem de erro
                   errorContainer.style.display = "none";
-                  
+
                   // Mostra título e formulário novamente
                   document.querySelector(".form-title h2").style.display = "block";
                   document.querySelector(".fields").style.display = "block";
-                  
+
                   // Repopular campos
                   document.getElementById("business").value = business;
                   document.getElementById("name").value = name;
@@ -553,10 +557,6 @@ if (document.readyState !== 'loading') {
     }
   });
 
-
-
-
-
   /*
      Scripts adicionais para atualizações de badges, GTM, etc.
      Se seu ambiente é SPA, mantenha estes observers para re-inicializar 
@@ -571,11 +571,12 @@ if (document.readyState !== 'loading') {
           var skuValueElement = document.querySelector(
             ".vtex-store-components-3-x-skuSelectorSelectorImageValue");
           var badgeTextElement;
-          var skuValueText = skuValueElement ? skuValueElement.textContent.trim() : '';
+          var skuValueText = skuValueElement ? skuValueElement.textContent.trim() : 
+            '';
 
           // Seleciona o elemento correto baseado no idioma
           if (skuValueText === "I am a SoftExpert's customer" ||
-            skuValueText === "I want to be a SoftExpert client (read below: Services included)") {
+            skuValueText === "I want to be a SoftExpert customer (read below: Services included)") { // Corrigido 'client' para 'customer'
             badgeTextElement = document.querySelector(
               ".vtex-product-specification-badges-0-x-badgeText--monthly-except-for-cash-payment");
           } else if (skuValueText === "Soy cliente de SoftExpert" ||

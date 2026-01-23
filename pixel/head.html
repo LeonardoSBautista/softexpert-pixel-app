@@ -695,4 +695,53 @@
     });
   });
 
+
+
+
+
+
+  // Ajuste do Binding Selector
+
+  (function() {
+    // Verifica se o objeto de runtime da VTEX está disponível
+    if (typeof window.__RUNTIME__ === 'undefined' || !window.__RUNTIME__.culture) {
+        console.warn('VTEX Runtime object not found. Refresh script aborted.');
+        return;
+    }
+
+    // Armazena o locale inicial para evitar refresh no primeiro carregamento
+    var initialLocale = window.__RUNTIME__.culture.locale;
+    var currentLocale = initialLocale;
+    
+    // Variável para armazenar o ID do intervalo de checagem
+    var checkIntervalId = null;
+
+    /**
+     * Função que verifica se o locale mudou e força o refresh.
+     */
+    function checkForLocaleChange() {
+        var newLocale = window.__RUNTIME__.culture.locale;
+
+        if (newLocale !== currentLocale) {
+            console.log('Locale alterado de ' + currentLocale + ' para ' + newLocale + '. Forçando refresh da página.');
+            
+            // Limpa o intervalo para evitar múltiplos refreshes
+            clearInterval(checkIntervalId);
+            
+            // Força o recarregamento completo da página
+            window.location.reload();
+        }
+        
+        // Atualiza o locale atual para a próxima checagem
+        currentLocale = newLocale;
+    }
+
+    // Inicia a checagem a cada 500ms (meio segundo)
+    // O intervalo é necessário porque a mudança de locale é um evento assíncrono
+    // dentro da SPA e não dispara um evento nativo fácil de interceptar.
+    checkIntervalId = setInterval(checkForLocaleChange, 500);
+    
+    console.log('Refresh-on-locale-change script iniciado. Locale inicial: ' + initialLocale);
+})();
+
 </script>

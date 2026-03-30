@@ -420,18 +420,64 @@
     updateBadgeText();
   };
 
-  // ─── RELATED PRODUCTS ─────────────────────────────────────────────────────
-  const checkRelatedProducts = () => {
+ // ─── RELATED PRODUCTS ─────────────────────────────────────────────────────
+const checkRelatedProducts = () => {
+  // Função que verifica e aplica a lógica dos produtos relacionados
+  const verifyAndApplyLogic = () => {
     const relatedProducts = document.querySelector(".vtex-shelf-1-x-relatedProducts");
     const flexRowRelated = document.querySelector(".vtex-flex-layout-0-x-flexRow--container-related");
+    
     if (relatedProducts && flexRowRelated) {
       const updateVisibility = () => {
-        flexRowRelated.style.display = relatedProducts.children.length === 0 ? "none" : "";
+        // Verifica se o relatedProducts tem elementos filhos (produtos)
+        const hasProducts = relatedProducts.children.length > 0;
+        flexRowRelated.style.display = hasProducts ? "" : "none";
       };
+      
+      // Aplica a visibilidade inicial
       updateVisibility();
-      new MutationObserver(updateVisibility).observe(relatedProducts, { childList: true, subtree: true });
+      
+      // Configura o observer apenas se ainda não foi configurado
+      if (!relatedProducts._observerConfigured) {
+        const observer = new MutationObserver(updateVisibility);
+        observer.observe(relatedProducts, { childList: true, subtree: true });
+        relatedProducts._observerConfigured = true;
+      }
     }
   };
+
+  // Executa a verificação inicial
+  verifyAndApplyLogic();
+  
+  // Configura um observer para monitorar o DOM em busca dos elementos
+  // que podem ser carregados dinamicamente durante navegação SPA
+  const domObserver = new MutationObserver((mutations, obs) => {
+    // Verifica se os elementos alvo existem no DOM
+    const relatedProducts = document.querySelector(".vtex-shelf-1-x-relatedProducts");
+    const flexRowRelated = document.querySelector(".vtex-flex-layout-0-x-flexRow--container-related");
+    
+    if (relatedProducts && flexRowRelated) {
+      verifyAndApplyLogic();
+      // Continua observando mesmo após encontrar os elementos,
+      // pois eles podem ser recriados durante navegação SPA
+    }
+  });
+  
+  // Observa todo o body em busca de mudanças
+  domObserver.observe(document.body, {
+    childList: true,
+    subtree: true
+  });
+  
+  // Também reage a eventos de navegação SPA
+  const handleSPANavigation = () => {
+    setTimeout(verifyAndApplyLogic, 100); // Pequeno delay para garantir que o DOM atualizou
+  };
+  
+  window.addEventListener("spa:navigation", handleSPANavigation);
+  window.addEventListener("spa:replacestate", handleSPANavigation);
+  window.addEventListener("popstate", handleSPANavigation);
+};
 
   // ─── LOCALE RELOAD ────────────────────────────────────────────────────────
   // FIX: monitora mudança real de locale pelo usuário, mas ignora alterações

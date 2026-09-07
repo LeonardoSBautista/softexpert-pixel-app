@@ -566,6 +566,69 @@
   })();
 
 </script>
+
+<script>
+(function () {
+  function replaceCurrency() {
+    var lang = document.documentElement.lang;
+
+    if (lang !== 'en-US' && lang !== 'es-MX') return;
+
+    /* PDP / vitrines */
+    document
+      .querySelectorAll('.vtex-product-price-1-x-currencyCode')
+      .forEach(function (el) {
+        if (el.textContent.trim() === '$') {
+          el.textContent = 'U$';
+        }
+      });
+
+    /* Minicart - produtos */
+    document
+      .querySelectorAll('.vtex-product-list-0-x-price')
+      .forEach(function (el) {
+        var text = el.textContent;
+
+        if (text && text.trim().charAt(0) === '$') {
+          el.textContent = text.replace('$', 'U$');
+        }
+      });
+
+    /* Minicart - subtotal / total */
+    document
+      .querySelectorAll('.vtex-checkout-summary-0-x-price')
+      .forEach(function (el) {
+        var text = el.textContent;
+
+        if (text && text.trim().charAt(0) === '$') {
+          el.textContent = text.replace('$', 'U$');
+        }
+      });
+  }
+
+  function initCurrencyObserver() {
+    replaceCurrency();
+
+    var observer = new MutationObserver(function () {
+      replaceCurrency();
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+      characterData: true
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCurrencyObserver);
+  } else {
+    initCurrencyObserver();
+  }
+})();
+</script>
+
+
 <style>
   .vtex-product-specification-badges-0-x-badgeContainer.vtex-product-specification-badges-0-x-badgeContainer--payment-type {
     background-color: transparent !important;

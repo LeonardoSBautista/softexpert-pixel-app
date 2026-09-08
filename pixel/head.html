@@ -579,7 +579,7 @@
       .querySelectorAll('.vtex-product-price-1-x-currencyCode')
       .forEach(function (el) {
         if (el.textContent.trim() === '$') {
-          el.textContent = 'U$';
+          el.textContent = 'US$';
         }
       });
 
@@ -590,7 +590,7 @@
         var text = el.textContent;
 
         if (text && text.trim().charAt(0) === '$') {
-          el.textContent = text.replace('$', 'U$');
+          el.textContent = text.replace('$', 'US$');
         }
       });
 
@@ -601,7 +601,7 @@
         var text = el.textContent;
 
         if (text && text.trim().charAt(0) === '$') {
-          el.textContent = text.replace('$', 'U$');
+          el.textContent = text.replace('$', 'US$');
         }
       });
   }

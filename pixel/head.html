@@ -569,72 +569,143 @@
 
 <script>
 (function () {
-  function replaceCurrency() {
-    var lang = document.documentElement.lang;
+  if (window.__softexpertCurrencyFixInitialized) return;
+  window.__softexpertCurrencyFixInitialized = true;
 
-    if (lang !== 'en-US' && lang !== 'es-MX') return;
+  var observer = null;
+  var scheduled = false;
 
-    /* PDP / vitrines */
-    document
-      .querySelectorAll('.vtex-product-price-1-x-currencyCode')
-      .forEach(function (el) {
-        if (el.textContent.trim() === '$') {
-          el.textContent = 'US$';
-        }
-      });
-
-    /* Minicart - produtos */
-    document
-      .querySelectorAll('.vtex-product-list-0-x-price')
-      .forEach(function (el) {
-        var text = el.textContent;
-
-        if (text && text.trim().charAt(0) === '$') {
-          el.textContent = text.replace('$', 'US$');
-        }
-      });
-
-    /* Minicart - subtotal / total */
-    document
-      .querySelectorAll('.vtex-checkout-summary-0-x-price')
-      .forEach(function (el) {
-        var text = el.textContent;
-
-        if (text && text.trim().charAt(0) === '$') {
-          el.textContent = text.replace('$', 'US$');
-        }
-      });
+  function getLang() {
+    return (document.documentElement.lang || '').trim();
   }
 
-  function initCurrencyObserver() {
-    replaceCurrency();
+  function isTargetLang(lang) {
+    return lang === 'en-US' || lang === 'es-MX';
+  }
 
-    var observer = new MutationObserver(function () {
+  function normalizePriceText(text, lang) {
+    if (!text) return text;
+
+    if (lang === 'en-US') {
+      return text.replace(/^(\s*)(?:US\$|\$)(?:\s|\u00A0)*/g, '$1US$ ');
+    }
+
+    if (lang === 'es-MX') {
+      return text.replace(/^(\s*)\$(?=(?:\s|\u00A0)*\d)/g, '$1US$');
+    }
+
+    return text;
+  }
+
+  function updateTextElement(el, lang) {
+    if (!el) return;
+
+    var currentText = el.textContent;
+    var newText = normalizePriceText(currentText, lang);
+
+    if (newText !== currentText) {
+      el.textContent = newText;
+    }
+  }
+
+  function replaceCurrency() {
+    var lang = getLang();
+
+    if (!isTargetLang(lang)) return;
+
+    if (observer) {
+      observer.disconnect();
+    }
+
+    try {
+      /* PDP / vitrines */
+      document
+        .querySelectorAll('.vtex-product-price-1-x-currencyCode')
+        .forEach(function (el) {
+          var currentText = el.textContent;
+
+          if (currentText === '$') {
+            el.textContent = 'US$';
+          }
+
+          if (lang === 'en-US') {
+            el.classList.add('softexpert-currency-space');
+          } else {
+            el.classList.remove('softexpert-currency-space');
+          }
+        });
+
+      /* Minicart - produtos */
+      document
+        .querySelectorAll('.vtex-product-list-0-x-price')
+        .forEach(function (el) {
+          updateTextElement(el, lang);
+        });
+
+      /* Minicart - subtotal / total */
+      document
+        .querySelectorAll('.vtex-checkout-summary-0-x-price')
+        .forEach(function (el) {
+          updateTextElement(el, lang);
+        });
+
+    } finally {
+      startObserver(false);
+    }
+  }
+
+  function scheduleReplaceCurrency() {
+    if (scheduled) return;
+
+    scheduled = true;
+
+    window.requestAnimationFrame(function () {
+      scheduled = false;
       replaceCurrency();
+    });
+  }
+
+  function startObserver(runInitial) {
+    if (!document.body) return;
+
+    if (observer) {
+      observer.disconnect();
+    }
+
+    observer = new MutationObserver(function () {
+      scheduleReplaceCurrency();
     });
 
     observer.observe(document.body, {
       childList: true,
-      subtree: true,
-      characterData: true
+      subtree: true
     });
+
+    if (runInitial !== false) {
+      scheduleReplaceCurrency();
+    }
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initCurrencyObserver);
+    document.addEventListener('DOMContentLoaded', function () {
+      startObserver(true);
+    });
   } else {
-    initCurrencyObserver();
+    startObserver(true);
   }
 })();
 </script>
 
-
 <style>
+  .softexpert-currency-space {
+    margin-right: 4px;
+  }
+
   .vtex-product-specification-badges-0-x-badgeContainer.vtex-product-specification-badges-0-x-badgeContainer--payment-type {
     background-color: transparent !important;
   }
 
-  .vtex-product-specification-badges-0-x-badgeContainer.vtex-product-specification-badges-0-x-badgeContainer--tipo-de-pago.bg-base.flex.items-center.justify-center\" {
-    background-color: transparent;
+  .vtex-product-specification-badges-0-x-badgeContainer.vtex-product-specification-badges-0-x-badgeContainer--tipo-de-pago.bg-base.flex.items-center.justify-center {
+    background-color: transparent !important;
   }
 </style>
